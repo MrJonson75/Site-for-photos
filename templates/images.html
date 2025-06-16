@@ -1,10 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Список изображений</title>
-</head>
-<body>
-      <h1>Список изображений</h1>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Хостинг изображений{% endblock %}
+
+{% block content %}
+<div class="gallery-container">
+    <h2>Хостинг изображений</h2>
+    {% if images %}
+    <div>
+        {% for image in images %}
+        <div class="image-card">
+            <a href="{{ image.url }}" target="_blank">
+                <img src="{{ image.thumbnail_url or image.url }}" alt="{{ image.description or 'Изображение' }}">
+            </a>
+            <div>
+                <p>{{ image.description or 'Без описания' }}</p>
+                <p class="text-sm">Загружено: {{ image.upload_date }}</p>
+                <div>
+                    <input type="text" value="{{ image.url }}" id="link-{{ image.id }}" readonly>
+                    <button onclick="copyLink('link-{{ image.id }}')" class="btn-copy">Копировать</button>
+                    <a href="{{ image.url }}" download class="btn-download">Скачать</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty-message">Изображения отсутствуют. <a href="/upload">Загрузите первое!</a></p>
+    {% endif %}
+</div>
+
+<script>
+function copyLink(inputId) {
+    const input = document.getElementById(inputId);
+    input.select();
+    navigator.clipboard.writeText(input.value)
+        .then(() => alert('Ссылка скопирована!'))
+        .catch(() => alert('Ошибка при копировании ссылки.'));
+}
+</script>
+{% endblock %}

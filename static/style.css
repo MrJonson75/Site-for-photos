@@ -1,0 +1,275 @@
+/*Сброс стилей*/
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Общие стили */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+}
+
+/* Контейнер */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Шапка */
+header {
+    background-color: #2563eb;
+    color: white;
+    padding: 1rem;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* Основной контент */
+main {
+    margin-top: 2rem;
+}
+
+/* Футер */
+footer {
+    background-color: #1f2937;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+}
+
+/* Главная страница */
+.index-section {
+    text-align: center;
+}
+
+.index-section h2 {
+    font-size: 1.875rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.index-section p {
+    font-size: 1.125rem;
+    margin-bottom: 1.5rem;
+}
+
+.btn {
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.25rem;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-blue {
+    background-color: #2563eb;
+}
+
+.btn-blue:hover {
+    background-color: #1e40af;
+}
+
+.btn-gray {
+    background-color: #4b5563;
+}
+
+.btn-gray:hover {
+    background-color: #374151;
+}
+
+/* Страница загрузки */
+.upload-container {
+    max-width: 28rem;
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+}
+
+.upload-container h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.upload-container label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: medium;
+    color: #374151;
+    margin-bottom: 0.25rem;
+}
+
+.upload-container input[type="file"] {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.upload-container textarea {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+}
+
+.upload-container textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.upload-container button {
+    width: 100%;
+    background-color: #2563eb;
+    color: white;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+.upload-container button:hover {
+    background-color: #1e40af;
+}
+
+.drop-zone {
+    border: 2px dashed #d1d5db;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    transition: border-color 0.2s;
+}
+
+.drop-zone.dragover {
+    border-color: #2563eb;
+}
+
+/* Страница галереи */
+.gallery-container {
+    max-width: 64rem;
+    margin: 0 auto;
+}
+
+.gallery-container h2 {
+    font-size: 1.875rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.image-card {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.image-card img {
+    width: 4rem;
+    height: 4rem;
+    object-fit: cover;
+    border-radius: 0.25rem;
+}
+
+.image-card p {
+    color: #6b7280;
+}
+
+.image-card .text-sm {
+    font-size: 0.875rem;
+    color: #9ca3af;
+}
+
+.image-card input {
+    flex-grow: 1;
+    border: 1px solid #d1d5db;
+    border-radius: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.image-card input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.image-card .btn-copy {
+    background-color: #2563eb;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    border: none;
+    cursor: pointer;
+}
+
+.image-card .btn-copy:hover {
+    background-color: #1e40af;
+}
+
+.image-card .btn-download {
+    background-color: #16a34a;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    text-decoration: none;
+}
+
+.image-card .btn-download:hover {
+    background-color: #15803d;
+}
+
+.empty-message {
+    text-align: center;
+    color: #6b7280;
+}
+
+.empty-message a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.empty-message a:hover {
+    text-decoration: underline;
+}

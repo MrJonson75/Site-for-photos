@@ -1,11 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Загрузка фотографии</title>
-</head>
-<body>
-      <h1>Загрузка фотографии</h1>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block title %}Загрузка изображения{% endblock %}
+
+{% block content %}
+<div class="upload-container">
+    <h2>Загрузить новое изображение</h2>
+    <div id="dropZone" class="drop-zone"
+         ondragover="event.preventDefault(); this.classList.add('dragover');"
+         ondragleave="this.classList.remove('dragover');"
+         ondrop="event.preventDefault(); this.classList.remove('dragover'); handleDrop(event);">
+        <p>Перетащите изображение сюда или выберите файл</p>
+        <form method="POST" enctype="multipart/form-data" id="uploadForm">
+            <div>
+                <label for="image">Выберите изображение</label>
+                <input type="file" id="image" name="image" accept="image/*" required>
+            </div>
+            <div>
+                <label for="description">Описание (необязательно)</label>
+                <textarea id="description" name="description" rows="4"></textarea>
+            </div>
+            <button type="submit">Загрузить</button>
+        </form>
+    </div>
+</div>
+
+<script>
+function handleDrop(event) {
+    const fileInput = document.getElementById('image');
+    const files = event.dataTransfer.files;
+    if (files.length > 0 && files[0].type.startsWith('image/')) {
+        fileInput.files = files;
+        fileInput.dispatchEvent(new Event('change'));
+    } else {
+        alert('Пожалуйста, выберите файл изображения.');
+    }
+}
+</script>
+{% endblock %}

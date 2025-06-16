@@ -1,11 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Хостинг изображения</title>
-</head>
-<body>
-    <h1>Хостинг изображения</h1>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block title %}Главная страница{% endblock %}
+
+{% block content %}
+<div class="index-section">
+    <h2>Добро пожаловать в галерею изображений!</h2>
+    <p>Здесь вы можете загружать и просматривать изображения.</p>
+    <div>
+        <a href="/upload" class="btn btn-blue">Загрузить изображение</a>
+        <a href="/images" class="btn btn-gray">Посмотреть галерею</a>
+    </div>
+</div>
+{% endblock %}

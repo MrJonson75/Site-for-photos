@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../static/style.css">
+    <title>{% block title %}{% endblock %}</title>
+
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <h1>Галерея изображений</h1>
+            <ul>
+                <li><a href="/">Главная</a></li>
+                <li><a href="/upload">Загрузка</a></li>
+                <li><a href="/images">Галерея</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="container">
+        {% block content %}
+        {% endblock %}
+    </main>
+    <footer>
+        <p>© 2025 Хостинг изображений. Все права защищены.</p>
+    </footer>
+</body>
+</html>
