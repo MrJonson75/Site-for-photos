@@ -2,6 +2,10 @@
 
 A simple web application for uploading, viewing, and downloading images, built with FastAPI, Jinja2 for templating, and styled with CSS in a warm pastel color scheme.
 
+# Хостинг изображений
+
+Простое веб -приложение для загрузки, просмотра и загрузки изображений, построенное с Fastapi, Jinja2 для шаблона и стилизовано с CSS в теплой пастельной цветовой гамме.
+
 ## Overview
 
 The application enables users to:
@@ -11,6 +15,16 @@ The application enables users to:
 - Copy image URLs and download images directly from the gallery.
 - Experience a smooth interface with a loading spinner during redirects and a friendly pastel aesthetic (peach, creamy white, coral).
 - Monitor server actions through detailed logging.
+
+## Обзор
+
+Приложение позволяет пользователям:
+- Загрузите изображения с дополнительными описаниями через форму или перетаскивание.
+- Посмотрите галерею изображений с миниатюрами, описаниями и датами загрузки.
+- Откройте изображения в модальном окне с описаниями, приближаясь, нажав за пределы области контента.
+- Скопируйте URL -адреса изображения и загрузите изображения прямо из галереи.
+- Познакомьтесь с гладким интерфейсом с погрузочным спиннером во время перенаправления и дружественной пастельной эстетикой (персик, сливочный белый, коралл).
+- Мониторинг действий сервера посредством подробного журнала.
 
 ## Technologies
 
@@ -117,6 +131,14 @@ project/
 - No user authentication or file management (e.g., deletion).
 - Limited file format validation (only `.jpg`, `.png`, `.gif` are supported).
 - Logs are appended without rotation, which may lead to large file sizes over time.
+
+## ограничения
+
+- Данные хранятся в памяти (`demo_images`) и сбрасываются при перезапуске сервера. Для постоянного хранения требуется база данных.
+- Нет аутентификации пользователей или управления файлами (например, удаление).
+- Ограниченная проверка формата файла (только `.jpg`,` .png`, `.gif` поддерживается).
+- Журналы добавляются без вращения, что может привести к большим размерам файлов с течением времени.
+
 
 ## Potential Improvements
 
