@@ -1,4 +1,5 @@
 import uvicorn
+import logging
 from fastapi import FastAPI, Request, File, UploadFile, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -7,6 +8,18 @@ from datetime import datetime
 import os
 from PIL import Image
 import uuid
+
+# Настройка логирования
+os.makedirs("logs", exist_ok=True)  # Создание директории logs
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('logs/app.log', encoding='utf-8'),
+        logging.StreamHandler()  # Вывод логов в консоль для отладки
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # Инициализация приложения FastAPI
 app = FastAPI()
@@ -27,6 +40,7 @@ demo_images = []
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     """Рендерит главную страницу index.html."""
+    logger.info("Доступ к домашней странице")
     context = {
         "request": request,
     }
@@ -36,6 +50,7 @@ async def index(request: Request):
 @app.get("/images/", response_class=HTMLResponse)
 async def images(request: Request):
     """Рендерит страницу images.html с списком загруженных изображений."""
+    logger.info("Доступ к странице галереи")
     context = {
         "request": request,
         "images": demo_images
@@ -46,6 +61,7 @@ async def images(request: Request):
 @app.get("/upload/", response_class=HTMLResponse)
 async def upload_page(request: Request):
     """Рендерит страницу upload.html с формой для загрузки изображения."""
+    logger.info("Доступ к странице загрузки")
     context = {
         "request": request,
     }
@@ -71,6 +87,7 @@ async def upload_image(request: Request, image: UploadFile = File(...), descript
     # Проверка расширения файла
     file_extension = os.path.splitext(image.filename)[1].lower()
     if file_extension not in allowed_extensions:
+        logger.error(f"Неверный формат файла: {image.filename}. Разрешенные форматы: {', '.join(allowed_extensions)}")
         context = {
             "request": request,
             "message": "Разрешены только файлы формата .jpg, .png или .gif"
@@ -82,6 +99,7 @@ async def upload_image(request: Request, image: UploadFile = File(...), descript
     file_size = image.file.tell()  # Получить размер файла в байтах
     image.file.seek(0)  # Вернуться в начало файла для последующей обработки
     if file_size > max_file_size:
+        logger.error(f"Подавать слишком большой: {image.filename}, размер: {file_size} байт, max: {max_file_size} байт")
         context = {
             "request": request,
             "message": "Размер файла не должен превышать 5 МБ"
@@ -90,6 +108,7 @@ async def upload_image(request: Request, image: UploadFile = File(...), descript
 
     # Проверка, что загруженный файл является изображением
     if not image.content_type.startswith("image/"):
+        logger.error(f"Неверный тип файла: {image.filename}, контент-тип: {image.content_type}")
         context = {
             "request": request,
             "message": "Файл должен быть изображением"
@@ -122,6 +141,9 @@ async def upload_image(request: Request, image: UploadFile = File(...), descript
     # Добавление нового изображения в список
     demo_images.append(new_image)
 
+    # Логирование успешной загрузки
+    logger.info(f"Успешная загрузка изображения: {file_name}, описание: {new_image['description']}")
+
     # Подготовка контекста для рендеринга страницы с сообщением об успехе
     context = {
         "request": request,
@@ -131,4 +153,5 @@ async def upload_image(request: Request, image: UploadFile = File(...), descript
 
 # Запуск сервера с помощью uvicorn
 if __name__ == "__main__":
+    logger.info("Cервер включен http://127.0.0.1:8000")
     uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
