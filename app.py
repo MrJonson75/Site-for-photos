@@ -12,12 +12,13 @@ import uuid
 app = FastAPI()
 # Настройка Jinja2 для рендеринга шаблонов из папки templates
 templates = Jinja2Templates(directory="templates")
-# Монтирование папки static для обслуживания статических файлов (CSS, изображения)
+# Монтирование папки static для обслуживания статических файлов (CSS, JS, изображения)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Создание директорий для хранения изображений и миниатюр
+# Создание директорий для хранения изображений, миниатюр и JavaScript-файлов
 os.makedirs("static/images", exist_ok=True)
 os.makedirs("static/thumbnails", exist_ok=True)
+os.makedirs("static/js", exist_ok=True)
 
 # Демонстрационный список фотографий (хранится в памяти для примера)
 demo_images = []

@@ -44,7 +44,7 @@
 <div id="imageModal" class="modal">
     <div class="modal-content">
         <!-- Кнопка закрытия модального окна -->
-        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <span class="modal-close" onclick="closeModal()">×</span>
         <!-- Изображение в модальном окне -->
         <img id="modalImage" src="" alt="" class="modal-image">
         <!-- Описание изображения в модальном окне -->
@@ -52,41 +52,6 @@
     </div>
 </div>
 
-<!-- JavaScript для управления модальным окном и копированием ссылок -->
-<script>
-function copyLink(inputId) {
-    // Выбор поля ввода по ID
-    const input = document.getElementById(inputId);
-    input.select();
-    // Копирование ссылки в буфер обмена
-    navigator.clipboard.writeText(input.value)
-        .then(() => alert('Ссылка скопирована!'))
-        .catch(() => alert('Ошибка при копировании ссылки.'));
-}
-
-function openModal(imageUrl, description) {
-    // Получение элементов модального окна
-    const modal = document.getElementById('imageModal');
-    const modalImage = document.getElementById('modalImage');
-    const modalDescription = document.getElementById('modalDescription');
-    // Установка изображения и описания
-    modalImage.src = imageUrl;
-    modalImage.alt = description;
-    modalDescription.textContent = description;
-    // Показ модального окна
-    modal.style.display = 'block';
-}
-
-function closeModal() {
-    // Скрытие модального окна
-    document.getElementById('imageModal').style.display = 'none';
-}
-
-// Закрытие модального окна при клике вне области контента
-document.getElementById('imageModal').addEventListener('click', function(event) {
-    if (event.target === this) {
-        closeModal();
-    }
-});
-</script>
+<!-- Подключение внешнего JavaScript файла для управления функционалом -->
+<script src="/static/js/images.js"></script>
 {% endblock %}
