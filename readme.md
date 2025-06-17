@@ -5,23 +5,27 @@ A simple web application for uploading, viewing, and downloading images, built w
 ## Overview
 
 The application enables users to:
-- Upload images with optional descriptions via a form or drag-and-drop, with client- and server-side validation.
+- Upload images with optional descriptions via a form or drag-and-drop.
 - View a gallery of images with thumbnails, descriptions, and upload dates.
 - Open images in a modal window with descriptions, closable by clicking outside the content area.
 - Copy image URLs and download images directly from the gallery.
-- Experience a smooth interface with a loading spinner during redirects and a warm pastel aesthetic (peach, creamy white, coral).
+- Experience a smooth interface with a loading spinner during redirects and a friendly pastel aesthetic (peach, creamy white, coral).
+- Monitor server actions through detailed logging.
 
 ## Technologies
 
 - **Backend**: FastAPI (Python) for handling routes and file uploads.
-- **Frontend**: Jinja2 for rendering HTML templates, pure CSS for styling, and JavaScript for interactivity.
+- **Frontend**: Jinja2 for HTML templating, plain CSS for styling, and JavaScript for interactivity.
 - **Image Processing**: Pillow for generating thumbnails.
 - **Data Storage**: Temporary in-memory storage using the `demo_images` list.
+- **Logging**: Python’s built-in `logging` module for tracking actions and errors.
 
 ## Project Structure
 
 ```
 project/
+├── logs/
+│   └── app.log                 # Log file for server actions and errors
 ├── static/
 │   ├── js/
 │   │   ├── upload.js           # JavaScript for upload page functionality
@@ -31,7 +35,7 @@ project/
 │   ├── thumbnails/             # Folder for thumbnails
 ├── templates/
 │   ├── base.html               # Base template with header and footer
-│   ├── index.html              # Homepage
+│   ├── index.html             # Homepage
 │   ├── upload.html             # Image upload page
 │   ├── images.html             # Gallery page
 └── app.py                      # Main FastAPI application file
@@ -39,7 +43,8 @@ project/
 
 ## Features
 
-- **Homepage (`/`)**: Displays a welcome message with buttons to navigate to the upload or gallery pages.
+- **Homepage (`/`)**:
+  - Displays a welcome message with buttons to navigate to the upload or gallery pages.
 - **Upload Page (`/upload`)**:
   - Form for selecting an image and adding a description, with drag-and-drop support.
   - Client-side validation for file format (`.jpg`, `.png`, `.gif`) and size (up to 5 MB).
@@ -50,6 +55,9 @@ project/
   - Displays images as cards with thumbnails, descriptions, and upload dates.
   - Modal window for viewing full-size images, closable by clicking outside or via a close button.
   - Options to copy image URLs or download images.
+- **Logging**:
+  - Records successful actions (e.g., page access, image uploads) and errors (e.g., invalid file format or size) with timestamps.
+  - Logs are stored in `logs/app.log` and include date, time, action, and details.
 
 ## Installation
 
@@ -71,9 +79,9 @@ project/
    pip install fastapi uvicorn python-multipart Pillow
    ```
 
-4. **Create directories for static files**:
+4. **Create directories for static files and logs**:
    ```bash
-   mkdir -p static/images static/thumbnails static/js
+   mkdir -p static/images static/thumbnails static/js logs
    ```
 
 ## Running the Application
@@ -96,18 +104,19 @@ project/
    - Drag and drop an image or select a file (`.jpg`, `.png`, or `.gif`, up to 5 MB).
    - Optionally add a description.
    - Click "Upload" and wait for the success message with a loading spinner, then be redirected to `/images/`.
-   - Invalid files trigger an error message on the page.
+   - Invalid files trigger an error message on the page, logged in `logs/app.log`.
 
 2. **Viewing the Gallery**:
    - Go to `/images`.
    - Click a thumbnail to open the image in a modal window; close it by clicking outside or using the close button.
-   - Copy the image URL or download the image using the respective buttons.
+   - Copy the image URL or download the image using the respective buttons. Actions are logged in `logs/app.log`.
 
 ## Limitations
 
 - Data is stored in memory (`demo_images`) and resets on server restart. A database is required for persistent storage.
 - No user authentication or file management (e.g., deletion).
 - Limited file format validation (only `.jpg`, `.png`, `.gif` are supported).
+- Logs are appended without rotation, which may lead to large file sizes over time.
 
 ## Potential Improvements
 
@@ -116,6 +125,16 @@ project/
 - Implement file deletion functionality in the gallery.
 - Enhance the loading animation with a progress bar or countdown.
 - Support additional image formats or larger file sizes with compression.
+- Implement log rotation to manage `app.log` file size.
+
+## потенциальные улучшения
+
+- Интегрируйте базу данных (например, SQLite или PostgreSQL) для постоянного хранения.
+- Добавьте аутентификацию пользователя в управление загруженными файлами.
+- Реализация функциональности удаления файлов в галерее.
+- Увеличить анимацию загрузки с помощью панели хода или обратного отсчета.
+- Поддержите дополнительные форматы изображений или большие размеры файлов с сжатием.
+- Реализовать вращение журнала для управления размером файла app.log`.
 
 ## License
 
