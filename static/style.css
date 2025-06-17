@@ -169,6 +169,11 @@ footer {
     background-color: #FFC107;
 }
 
+.upload-container button:disabled {
+    background-color: #A9A9A9;
+    cursor: not-allowed;
+}
+
 .drop-zone {
     border: 2px dashed #A9A9A9;
     border-radius: 8px;
@@ -182,14 +187,40 @@ footer {
     border-color: #FFB6C1;
 }
 
-.upload-message {
-    color: #8B7D6B;
+.message {
     font-size: 16px;
     margin-bottom: 16px;
     text-align: center;
-    background-color: #FFF8DC;
     padding: 8px;
     border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.success-message {
+    color: #8B7D6B;
+    background-color: #FFF8DC;
+}
+
+.error-message {
+    color: #D32F2F;
+    background-color: #FFEBEE;
+}
+
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #FFB6C1;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* Страница галереи */

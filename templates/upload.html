@@ -8,9 +8,15 @@
     <!-- Заголовок страницы -->
     <h2>Загрузить новое изображение</h2>
 
-    <!-- Отображение сообщения об успехе или ошибке, если оно передано в контексте -->
+    <!-- Отображение сообщения об успехе или ошибке -->
     {% if message %}
-    <p class="upload-message">{{ message }}</p>
+    <p class="message {{ 'success-message' if message == 'Изображение успешно загружено!' else 'error-message' }}">
+        {{ message }}
+        {% if message == 'Изображение успешно загружено!' %}
+        <!-- Индикатор ожидания для успешной загрузки -->
+        <div class="spinner"></div>
+        {% endif %}
+    </p>
     {% endif %}
 
     <!-- Область для drag-and-drop и формы -->
@@ -25,7 +31,9 @@
             <!-- Поле выбора файла -->
             <div>
                 <label for="image">Выберите изображение</label>
-                <input type="file" id="image" name="image" accept="image/*" required>
+                <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/gif" required>
+                <!-- Сообщение об ошибке валидации на стороне клиента -->
+                <p id="clientErrorMessage" class="error-message" style="display: none;"></p>
             </div>
             <!-- Поле для описания -->
             <div>
@@ -33,24 +41,98 @@
                 <textarea id="description" name="description" rows="4"></textarea>
             </div>
             <!-- Кнопка отправки формы -->
-            <button type="submit">Загрузить</button>
+            <button type="submit" id="submitBtn">Загрузить</button>
         </form>
     </div>
 </div>
 
-<!-- JavaScript для обработки drag-and-drop -->
+<!-- JavaScript для обработки drag-and-drop, клиентской валидации и перенаправления -->
 <script>
-function handleDrop(event) {
-    // Получение элемента input для файла
-    const fileInput = document.getElementById('image');
-    const files = event.dataTransfer.files;
-    // Проверка, что файл является изображением
-    if (files.length > 0 && files[0].type.startsWith('image/')) {
-        fileInput.files = files;
-        fileInput.dispatchEvent(new Event('change'));
-    } else {
-        alert('Пожалуйста, выберите файл изображения.');
+// Список разрешенных расширений файлов
+const ALLOWED_EXTENSIONS = ['.jpg', '.png', '.gif'];
+// Максимальный размер файла: 5 МБ
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+// Функция для проверки файла
+function validateFile(file) {
+    // Проверка расширения файла
+    const fileExtension = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
+    if (!ALLOWED_EXTENSIONS.includes(fileExtension)) {
+        return 'Разрешены только файлы формата .jpg, .png или .gif';
     }
+    // Проверка размера файла
+    if (file.size > MAX_FILE_SIZE) {
+        return 'Размер файла не должен превышать 5 МБ';
+    }
+    return null; // Файл прошел валидацию
+}
+
+// Функция обработки drag-and-drop
+function handleDrop(event) {
+    const fileInput = document.getElementById('image');
+    const clientErrorMessage = document.getElementById('clientErrorMessage');
+    const files = event.dataTransfer.files;
+
+    // Скрыть сообщение об ошибке
+    clientErrorMessage.style.display = 'none';
+
+    // Проверка, что файл является изображением
+    if (files.length > 0) {
+        const error = validateFile(files[0]);
+        if (error) {
+            clientErrorMessage.textContent = error;
+            clientErrorMessage.style.display = 'block';
+        } else if (files[0].type.startsWith('image/')) {
+            fileInput.files = files;
+            fileInput.dispatchEvent(new Event('change'));
+        } else {
+            clientErrorMessage.textContent = 'Пожалуйста, выберите файл изображения.';
+            clientErrorMessage.style.display = 'block';
+        }
+    }
+}
+
+// Обработчик изменения input файла
+document.getElementById('image').addEventListener('change', function() {
+    const clientErrorMessage = document.getElementById('clientErrorMessage');
+    clientErrorMessage.style.display = 'none';
+
+    if (this.files.length > 0) {
+        const error = validateFile(this.files[0]);
+        if (error) {
+            clientErrorMessage.textContent = error;
+            clientErrorMessage.style.display = 'block';
+            this.value = ''; // Очистить input
+        }
+    }
+});
+
+// Обработчик отправки формы
+document.getElementById('uploadForm').addEventListener('submit', function(event) {
+    const fileInput = document.getElementById('image');
+    const clientErrorMessage = document.getElementById('clientErrorMessage');
+    const submitBtn = document.getElementById('submitBtn');
+
+    clientErrorMessage.style.display = 'none';
+
+    if (fileInput.files.length > 0) {
+        const error = validateFile(fileInput.files[0]);
+        if (error) {
+            event.preventDefault();
+            clientErrorMessage.textContent = error;
+            clientErrorMessage.style.display = 'block';
+            return;
+        }
+    }
+    // Отключить кнопку во время отправки
+    submitBtn.disabled = true;
+});
+
+// Перенаправление на /images/ через 1 секунду после успешной загрузки
+if (document.querySelector('.success-message')) {
+    setTimeout(() => {
+        window.location.href = '/images/';
+    }, 1000);
 }
 </script>
 {% endblock %}

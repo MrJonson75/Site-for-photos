@@ -81,5 +81,12 @@ function closeModal() {
     // Скрытие модального окна
     document.getElementById('imageModal').style.display = 'none';
 }
+
+// Закрытие модального окна при клике вне области контента
+document.getElementById('imageModal').addEventListener('click', function(event) {
+    if (event.target === this) {
+        closeModal();
+    }
+});
 </script>
 {% endblock %}

@@ -1,5 +1,5 @@
 import uvicorn
-from fastapi import FastAPI, Request, File, UploadFile, HTTPException, Form
+from fastapi import FastAPI, Request, File, UploadFile, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -60,7 +60,7 @@ async def upload_image(request: Request, image: UploadFile = File(...), descript
     - Проверяет, что файл является изображением.
     - Сохраняет оригинал и создает миниатюру.
     - Извлекает описание из формы и добавляет его в demo_images.
-    - Возвращает страницу upload.html с сообщением об успехе.
+    - Возвращает страницу upload.html с сообщением об успехе или ошибке.
     """
     # Список разрешенных расширений файлов
     allowed_extensions = {'.jpg', '.png', '.gif'}
@@ -70,18 +70,30 @@ async def upload_image(request: Request, image: UploadFile = File(...), descript
     # Проверка расширения файла
     file_extension = os.path.splitext(image.filename)[1].lower()
     if file_extension not in allowed_extensions:
-        raise HTTPException(status_code=400, detail="Разрешены только файлы формата .jpg, .png или .gif")
+        context = {
+            "request": request,
+            "message": "Разрешены только файлы формата .jpg, .png или .gif"
+        }
+        return templates.TemplateResponse("upload.html", context=context)
 
     # Проверка размера файла
     image.file.seek(0, os.SEEK_END)  # Перейти в конец файла для определения размера
     file_size = image.file.tell()  # Получить размер файла в байтах
     image.file.seek(0)  # Вернуться в начало файла для последующей обработки
     if file_size > max_file_size:
-        raise HTTPException(status_code=400, detail="Размер файла не должен превышать 5 МБ")
+        context = {
+            "request": request,
+            "message": "Размер файла не должен превышать 5 МБ"
+        }
+        return templates.TemplateResponse("upload.html", context=context)
 
     # Проверка, что загруженный файл является изображением
     if not image.content_type.startswith("image/"):
-        raise HTTPException(status_code=400, detail="Файл должен быть изображением")
+        context = {
+            "request": request,
+            "message": "Файл должен быть изображением"
+        }
+        return templates.TemplateResponse("upload.html", context=context)
 
     # Генерация уникального имени файла с использованием UUID
     file_name = f"{uuid.uuid4()}{file_extension}"
@@ -109,7 +121,7 @@ async def upload_image(request: Request, image: UploadFile = File(...), descript
     # Добавление нового изображения в список
     demo_images.append(new_image)
 
-    # Подготовка контекста для рендеринга страницы с сообщением
+    # Подготовка контекста для рендеринга страницы с сообщением об успехе
     context = {
         "request": request,
         "message": "Изображение успешно загружено!"
