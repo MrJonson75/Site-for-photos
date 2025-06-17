@@ -3,18 +3,28 @@
 {% block title %}Хостинг изображений{% endblock %}
 
 {% block content %}
+<!-- Контейнер для страницы галереи -->
 <div class="gallery-container">
+    <!-- Заголовок страницы -->
     <h2>Хостинг изображений</h2>
+
+    <!-- Проверка наличия изображений в списке -->
     {% if images %}
     <div>
+        <!-- Цикл по списку изображений -->
         {% for image in images %}
         <div class="image-card">
-            <a href="{{ image.url }}" target="_blank">
+            <!-- Миниатюра изображения, кликабельная для открытия модального окна -->
+            <a href="#" onclick="openModal('{{ image.url }}', '{{ image.description or 'Изображение' }}')">
                 <img src="{{ image.thumbnail_url or image.url }}" alt="{{ image.description or 'Изображение' }}">
             </a>
+            <!-- Информация об изображении -->
             <div>
-                <p>{{ image.description or 'Без описания' }}</p>
+                <!-- Описание изображения с fallback на 'Без описания' -->
+                <p>{{ image.description | default('Без описания', true) }}</p>
+                <!-- Дата загрузки -->
                 <p class="text-sm">Загружено: {{ image.upload_date }}</p>
+                <!-- Блок с действиями: копирование ссылки и скачивание -->
                 <div>
                     <input type="text" value="{{ image.url }}" id="link-{{ image.id }}" readonly>
                     <button onclick="copyLink('link-{{ image.id }}')" class="btn-copy">Копировать</button>
@@ -25,17 +35,51 @@
         {% endfor %}
     </div>
     {% else %}
+    <!-- Сообщение, если изображения отсутствуют -->
     <p class="empty-message">Изображения отсутствуют. <a href="/upload">Загрузите первое!</a></p>
     {% endif %}
 </div>
 
+<!-- Модальное окно для просмотра изображения -->
+<div id="imageModal" class="modal">
+    <div class="modal-content">
+        <!-- Кнопка закрытия модального окна -->
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <!-- Изображение в модальном окне -->
+        <img id="modalImage" src="" alt="" class="modal-image">
+        <!-- Описание изображения в модальном окне -->
+        <p id="modalDescription" class="modal-description"></p>
+    </div>
+</div>
+
+<!-- JavaScript для управления модальным окном и копированием ссылок -->
 <script>
 function copyLink(inputId) {
+    // Выбор поля ввода по ID
     const input = document.getElementById(inputId);
     input.select();
+    // Копирование ссылки в буфер обмена
     navigator.clipboard.writeText(input.value)
         .then(() => alert('Ссылка скопирована!'))
         .catch(() => alert('Ошибка при копировании ссылки.'));
+}
+
+function openModal(imageUrl, description) {
+    // Получение элементов модального окна
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalDescription = document.getElementById('modalDescription');
+    // Установка изображения и описания
+    modalImage.src = imageUrl;
+    modalImage.alt = description;
+    modalDescription.textContent = description;
+    // Показ модального окна
+    modal.style.display = 'block';
+}
+
+function closeModal() {
+    // Скрытие модального окна
+    document.getElementById('imageModal').style.display = 'none';
 }
 </script>
 {% endblock %}

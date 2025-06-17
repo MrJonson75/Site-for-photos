@@ -1,15 +1,21 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    <!-- Мета-теги и подключение стилей -->
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="../static/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Заголовок страницы, задаваемый дочерними шаблонами -->
     <title>{% block title %}{% endblock %}</title>
-
+    <!-- Подключение пользовательского файла стилей -->
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+    <!-- Шапка сайта -->
     <header>
         <nav class="container">
+            <!-- Заголовок сайта -->
             <h1>Хостинг изображений</h1>
+            <!-- Навигационное меню -->
             <ul>
                 <li><a href="/">Главная</a></li>
                 <li><a href="/upload">Загрузка</a></li>
@@ -17,10 +23,12 @@
             </ul>
         </nav>
     </header>
+    <!-- Основной контент, заменяемый дочерними шаблонами -->
     <main class="container">
         {% block content %}
         {% endblock %}
     </main>
+    <!-- Футер сайта -->
     <footer>
         <p>© 2025 Хостинг изображений. Все права защищены.</p>
     </footer>

@@ -1,5 +1,5 @@
 import uvicorn
-from fastapi import FastAPI, Request, File, UploadFile, HTTPException
+from fastapi import FastAPI, Request, File, UploadFile, HTTPException, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -21,27 +21,14 @@ os.makedirs("static/thumbnails", exist_ok=True)
 
 # Демонстрационный список фотографий (хранится в памяти для примера)
 demo_images = [
-    {
-        "id": 1,
-        "url": "/static/images/photo1.jpg",
-        "thumbnail_url": "/static/thumbnails/thumb1.jpg",
-        "description": "Закат на пляже",
-        "upload_date": datetime(2025, 6, 1, 12, 0).strftime("%Y-%m-%d %H:%M")
-    },
-    {
-        "id": 2,
-        "url": "/static/images/photo2.jpg",
-        "thumbnail_url": "/static/thumbnails/thumb2.jpg",
-        "description": "Горный пейзаж",
-        "upload_date": datetime(2025, 6, 2, 14, 30).strftime("%Y-%m-%d %H:%M")
-    },
-    {
-        "id": 3,
-        "url": "/static/images/photo3.jpg",
-        "thumbnail_url": "/static/thumbnails/thumb3.jpg",
-        "description": "Цветочное поле",
-        "upload_date": datetime(2025, 6, 3, 9, 15).strftime("%Y-%m-%d %H:%M")
-    }
+    # {
+    #     "id": 1,
+    #     "url": "/static/images/photo1.jpg",
+    #     "thumbnail_url": "/static/thumbnails/thumb1.jpg",
+    #     "description": "Закат на пляже",
+    #     "upload_date": datetime(2025, 6, 1, 12, 0).strftime("%Y-%m-%d %H:%M")
+    # }
+
 ]
 
 # Обработчик GET-запроса для главной страницы
@@ -66,7 +53,7 @@ async def images(request: Request):
 # Обработчик GET-запроса для страницы загрузки
 @app.get("/upload/", response_class=HTMLResponse)
 async def upload_page(request: Request):
-    """Рендерит страницу upload.html с формой для загрузки изображения."""
+    """Рендерит страФорму для загрузки изображения."""
     context = {
         "request": request,
     }
@@ -74,7 +61,7 @@ async def upload_page(request: Request):
 
 # Обработчик POST-запроса для загрузки изображения
 @app.post("/upload/", response_class=HTMLResponse)
-async def upload_image(request: Request, image: UploadFile = File(...), description: str = None):
+async def upload_image(request: Request, image: UploadFile = File(...), description: str = Form(None)):
     """
     Обрабатывает загрузку изображения:
     - Проверяет, что файл является изображением.
@@ -102,12 +89,12 @@ async def upload_image(request: Request, image: UploadFile = File(...), descript
         img.thumbnail((64, 64))
         img.save(thumbnail_path, quality=85)
 
-    # Формирование данных для нового изображения
+    # Формирование данных для нового изображения, включая описание из формы
     new_image = {
         "id": len(demo_images) + 1,
         "url": f"/static/images/{file_name}",
         "thumbnail_url": f"/static/thumbnails/{thumbnail_name}",
-        "description": description or "Без описания",
+        "description": description.strip() if description else "Без описания",
         "upload_date": datetime.now().strftime("%Y-%m-%d %H:%M")
     }
     # Добавление нового изображения в список
