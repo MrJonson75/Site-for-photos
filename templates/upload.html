@@ -3,31 +3,48 @@
 {% block title %}Загрузка изображения{% endblock %}
 
 {% block content %}
+<!-- Контейнер для формы загрузки изображения -->
 <div class="upload-container">
+    <!-- Заголовок страницы -->
     <h2>Загрузить новое изображение</h2>
+
+    <!-- Отображение сообщения об успехе или ошибке, если оно передано в контексте -->
+    {% if message %}
+    <p class="upload-message">{{ message }}</p>
+    {% endif %}
+
+    <!-- Область для drag-and-drop и формы -->
     <div id="dropZone" class="drop-zone"
          ondragover="event.preventDefault(); this.classList.add('dragover');"
          ondragleave="this.classList.remove('dragover');"
          ondrop="event.preventDefault(); this.classList.remove('dragover'); handleDrop(event);">
+        <!-- Текст с инструкцией для пользователя -->
         <p>Перетащите изображение сюда или выберите файл</p>
+        <!-- Форма для загрузки изображения -->
         <form method="POST" enctype="multipart/form-data" id="uploadForm">
+            <!-- Поле выбора файла -->
             <div>
                 <label for="image">Выберите изображение</label>
                 <input type="file" id="image" name="image" accept="image/*" required>
             </div>
+            <!-- Поле для описания -->
             <div>
                 <label for="description">Описание (необязательно)</label>
                 <textarea id="description" name="description" rows="4"></textarea>
             </div>
+            <!-- Кнопка отправки формы -->
             <button type="submit">Загрузить</button>
         </form>
     </div>
 </div>
 
+<!-- JavaScript для обработки drag-and-drop -->
 <script>
 function handleDrop(event) {
+    // Получение элемента input для файла
     const fileInput = document.getElementById('image');
     const files = event.dataTransfer.files;
+    // Проверка, что файл является изображением
     if (files.length > 0 && files[0].type.startsWith('image/')) {
         fileInput.files = files;
         fileInput.dispatchEvent(new Event('change'));

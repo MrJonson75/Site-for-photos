@@ -182,6 +182,16 @@ footer {
     border-color: #FFB6C1;
 }
 
+.upload-message {
+    color: #8B7D6B;
+    font-size: 16px;
+    margin-bottom: 16px;
+    text-align: center;
+    background-color: #FFF8DC;
+    padding: 8px;
+    border-radius: 4px;
+}
+
 /* Страница галереи */
 .gallery-container {
     max-width: 1024px;
