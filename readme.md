@@ -101,16 +101,7 @@ project/
 ## Limitations
 
 - Data is stored in memory (`demo_images`) and resets on server restart. A database is needed for persistent storage.
-- No validation for file size or format.
-- The modal window does not close when clicking outside its area.
 
-## Potential Improvements
-
-- Add a database (SQLite/PostgreSQL) for storing images and descriptions.
-- Implement redirection to `/images` after uploading.
-- Add validation for file size and format.
-- Support closing the modal window by clicking outside.
-- Add user authentication for managing uploaded files.
 
 ## License
 
