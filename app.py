@@ -20,16 +20,7 @@ os.makedirs("static/images", exist_ok=True)
 os.makedirs("static/thumbnails", exist_ok=True)
 
 # Демонстрационный список фотографий (хранится в памяти для примера)
-demo_images = [
-    # {
-    #     "id": 1,
-    #     "url": "/static/images/photo1.jpg",
-    #     "thumbnail_url": "/static/thumbnails/thumb1.jpg",
-    #     "description": "Закат на пляже",
-    #     "upload_date": datetime(2025, 6, 1, 12, 0).strftime("%Y-%m-%d %H:%M")
-    # }
-
-]
+demo_images = []
 
 # Обработчик GET-запроса для главной страницы
 @app.get("/", response_class=HTMLResponse)
@@ -53,7 +44,7 @@ async def images(request: Request):
 # Обработчик GET-запроса для страницы загрузки
 @app.get("/upload/", response_class=HTMLResponse)
 async def upload_page(request: Request):
-    """Рендерит страФорму для загрузки изображения."""
+    """Рендерит страницу upload.html с формой для загрузки изображения."""
     context = {
         "request": request,
     }
@@ -64,18 +55,36 @@ async def upload_page(request: Request):
 async def upload_image(request: Request, image: UploadFile = File(...), description: str = Form(None)):
     """
     Обрабатывает загрузку изображения:
+    - Проверяет формат файла (разрешены только .jpg, .png, .gif).
+    - Проверяет размер файла (не более 5 МБ).
     - Проверяет, что файл является изображением.
     - Сохраняет оригинал и создает миниатюру.
-    - Добавляет информацию об изображении в demo_images.
+    - Извлекает описание из формы и добавляет его в demo_images.
     - Возвращает страницу upload.html с сообщением об успехе.
     """
+    # Список разрешенных расширений файлов
+    allowed_extensions = {'.jpg', '.png', '.gif'}
+    # Максимальный размер файла (5 МБ в байтах)
+    max_file_size = 5 * 1024 * 1024  # 5 MB
+
+    # Проверка расширения файла
+    file_extension = os.path.splitext(image.filename)[1].lower()
+    if file_extension not in allowed_extensions:
+        raise HTTPException(status_code=400, detail="Разрешены только файлы формата .jpg, .png или .gif")
+
+    # Проверка размера файла
+    image.file.seek(0, os.SEEK_END)  # Перейти в конец файла для определения размера
+    file_size = image.file.tell()  # Получить размер файла в байтах
+    image.file.seek(0)  # Вернуться в начало файла для последующей обработки
+    if file_size > max_file_size:
+        raise HTTPException(status_code=400, detail="Размер файла не должен превышать 5 МБ")
+
     # Проверка, что загруженный файл является изображением
     if not image.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="Файл должен быть изображением")
 
     # Генерация уникального имени файла с использованием UUID
-    file_extension = image.filename.split('.')[-1]
-    file_name = f"{uuid.uuid4()}.{file_extension}"
+    file_name = f"{uuid.uuid4()}{file_extension}"
     thumbnail_name = f"thumb_{file_name}"
 
     # Сохранение оригинального изображения в папку static/images
