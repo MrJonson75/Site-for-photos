@@ -139,25 +139,6 @@ project/
 - Ограниченная проверка формата файла (только `.jpg`,` .png`, `.gif` поддерживается).
 - Журналы добавляются без вращения, что может привести к большим размерам файлов с течением времени.
 
-
-## Potential Improvements
-
-- Integrate a database (e.g., SQLite or PostgreSQL) for persistent storage.
-- Add user authentication to manage uploaded files.
-- Implement file deletion functionality in the gallery.
-- Enhance the loading animation with a progress bar or countdown.
-- Support additional image formats or larger file sizes with compression.
-- Implement log rotation to manage `app.log` file size.
-
-## потенциальные улучшения
-
-- Интегрируйте базу данных (например, SQLite или PostgreSQL) для постоянного хранения.
-- Добавьте аутентификацию пользователя в управление загруженными файлами.
-- Реализация функциональности удаления файлов в галерее.
-- Увеличить анимацию загрузки с помощью панели хода или обратного отсчета.
-- Поддержите дополнительные форматы изображений или большие размеры файлов с сжатием.
-- Реализовать вращение журнала для управления размером файла app.log`.
-
 ## License
 
 © 2025 Image Hosting. All rights reserved.
