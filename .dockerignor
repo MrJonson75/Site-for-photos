@@ -47,3 +47,5 @@ build/
 .cache/
 
 test.txt
+
+1_docker-compose.yml
