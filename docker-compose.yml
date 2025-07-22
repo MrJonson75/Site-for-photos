@@ -1,26 +1,40 @@
+version: '3.8'
+
 services:
-  image_host_web:  # Название сервиса
+  # Основное приложение FastAPI
+  image_host_web:
     build:
-      context: .  # Путь к Dockerfile
-      dockerfile: Dockerfile  # Имя Dockerfile
-    container_name: site-foto-web  # Имя контейнера
-    restart: unless-stopped  # Перезапуск, если контейнер аварийно остановлен
-
+      context: .
+      dockerfile: Dockerfile
+    container_name: site-foto-web
+    restart: unless-stopped
     volumes:
-      - images:/app/static/images  # том 'images' подключен к /app/static/images
-      - logs:/app/logs             # том 'logs' подключен к /app/logs
+      - images:/app/static/images
+      - logs:/app/logs
     expose:
-      - 8000  # Порта, которые будут доступны извне
-    ports:
-      - "8000:8000"  # Проброс порта
-
+      - "8000"  # Открыт только для внутренней сети, не наружу
     networks:
-      - default  # Подключение к сети
+      - internal
+
+  # Обратный прокси nginx
+  nginx:
+    image: nginx:latest
+    container_name: nginx-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"  # Проброс наружу
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro  # Конфиг nginx
+      - ./static:/app/static:ro  # Статические файлы
+    depends_on:
+      - image_host_web
+    networks:
+      - internal
 
 networks:
-  default:  # Сеть по умолчанию
-    driver: bridge  # Тип сети
+  internal:  # Внутренняя сеть
+    driver: bridge
 
 volumes:
-  images:  # Объявление именованного тома 'images'
-  logs:    # Объявление именованного тома 'logs'
+  images:
+  logs:
