@@ -1,5 +1,8 @@
 import uvicorn
 import logging
+# Устанавливаем уровень логирования
+from logging.handlers import RotatingFileHandler
+
 from fastapi import FastAPI, Request, File, UploadFile, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -11,14 +14,24 @@ import uuid
 
 # Настройка логирования
 os.makedirs("logs", exist_ok=True)  # Создание директории logs
+
+
+# Ротация логов: до 5 файлов по 5 МБ каждый
+log_handler = RotatingFileHandler(
+    "logs/app.log", maxBytes=5*1024*1024, backupCount=5, encoding='utf-8'
+)
+
+# Настройка логгера
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
+    format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler('logs/app.log', encoding='utf-8'),
-        logging.StreamHandler()  # Вывод логов в консоль для отладки
+        log_handler,
+        logging.StreamHandler()
     ]
 )
+
+
 logger = logging.getLogger(__name__)
 
 # Инициализация приложения FastAPI
