@@ -9,8 +9,8 @@ services:
     container_name: site-foto-web
     restart: unless-stopped
     volumes:
-      - images:/app/static/images
-      - logs:/app/logs
+      - ./static:/app/static    # Статические файлы
+      - logs:/app/logs          # Логи
     expose:
       - "8000"  # Открыт только для внутренней сети, не наружу
     networks:
