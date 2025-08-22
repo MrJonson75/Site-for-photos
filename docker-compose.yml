@@ -8,9 +8,11 @@ services:
     restart: unless-stopped
     volumes:
       - ./static:/app/static    # Статические файлы
-      - logs:/app/logs          # Логи
+      - ./logs:/app/logs          # Логи
     expose:
       - "8000"  # Открыт только для внутренней сети, не наружу
+    depends_on:
+      - db
     networks:
       - internal
 
@@ -29,10 +31,45 @@ services:
     networks:
       - internal
 
+  # Собственный контейнер для базы данных
+  db:
+    image: postgres:17
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${P_USER}
+      POSTGRES_PASSWORD: ${P_PASSWORD}
+      POSTGRES_DB: ${P_DB}
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - internal
+
+  # Собственный контейнер для pgAdmin
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+      SCRIPT_NAME: "/pgadmin"  # Указываем базовый путь
+    ports:
+      - "5050:5050"
+    volumes:
+      - ./pgadmin_data:/var/lib/pgadmin
+      - ./pgadmin_config:/root/.pgadmin
+      - ./pgadmin_import:/backups
+      - ./pgadmin_import:/import
+    restart: unless-stopped
+    depends_on:
+      - db
+    networks:
+      - internal
+
 networks:
   internal:  # Внутренняя сеть
     driver: bridge
 
-volumes:
-  images:
-  logs:
+
