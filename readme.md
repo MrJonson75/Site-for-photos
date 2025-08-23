@@ -201,35 +201,7 @@
 **Security**
 
 - Используйте сложные пароли для `P_PASSWORD` и `PGADMIN_DEFAULT_PASSWORD` в `.env`.  
-  *Use strong passwords for `P_PASSWORD` and `PGADMIN_DEFAULT_PASSWORD` in `.env`.  
-- Настройте HTTPS для Nginx с помощью Let’s Encrypt.  
-  *Set up HTTPS for Nginx using Let’s Encrypt.  
-- (Опционально) Добавьте базовую аутентификацию для pgAdmin в `nginx.conf`:  
-  ```nginx
-  location /pgadmin/ {
-    auth_basic "Restricted Access";
-    auth_basic_user_file /etc/nginx/.htpasswd;
-    proxy_pass http://pgadmin:80;
-    ...
-  }
-  ```
-  Создайте `.htpasswd`:  
-  ```bash
-  htpasswd -c /path/to/.htpasswd admin
-  ```
-  *(Optional) Add basic authentication for pgAdmin in `nginx.conf`*:  
-  ```nginx
-  location /pgadmin/ {
-    auth_basic "Restricted Access";
-    auth_basic_user_file /etc/nginx/.htpasswd;
-    proxy_pass http://pgadmin:80;
-    ...
-  }
-  ```
-  Create `.htpasswd`:  
-  ```bash
-  htpasswd -c /path/to/.htpasswd admin
-  ```
+  *Use strong passwords for `P_PASSWORD` and `PGADMIN_DEFAULT_PASSWORD` in `.env`.
 
 
 ## Будущие улучшения  
