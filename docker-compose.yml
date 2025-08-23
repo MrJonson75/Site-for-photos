@@ -7,14 +7,17 @@ services:
     container_name: site-foto-web
     restart: unless-stopped
     volumes:
-      - ./static:/app/static    # Статические файлы
-      - ./logs:/app/logs          # Логи
+      - ./static:/app/static
+      - ./logs:/app/logs
+      - ./.env:/app/.env  # Добавляем .env в контейнер
     expose:
-      - "8000"  # Открыт только для внутренней сети, не наружу
+      - "8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy   # ждём пока db станет "здоровым"
     networks:
       - internal
+
 
   # Обратный прокси nginx
   nginx:
@@ -46,17 +49,22 @@ services:
       - "5432:5432"
     networks:
       - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${P_USER} -d ${P_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # Собственный контейнер для pgAdmin
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
       SCRIPT_NAME: "/pgadmin"  # Указываем базовый путь
     ports:
-      - "5050:5050"
+      - "5050:80"
     volumes:
       - ./pgadmin_data:/var/lib/pgadmin
       - ./pgadmin_config:/root/.pgadmin
