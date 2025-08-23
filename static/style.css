@@ -383,3 +383,35 @@ footer {
 .modal-close:hover {
     color: #FFB6C1;
 }
+
+/* Пагинация */
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.pagination a,
+.pagination span {
+    display: inline-block;
+    padding: 6px 12px;
+    margin: 0 4px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #8B7D6B;
+    background-color: #FFF;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.pagination a:hover {
+    background-color: #FFDAB9;
+    color: white;
+}
+
+.pagination .current {
+    font-weight: bold;
+    background-color: #F4A460;
+    color: white;
+    border-color: #F4A460;
+}

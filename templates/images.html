@@ -40,6 +40,27 @@
     <!-- Сообщение, если изображения отсутствуют -->
     <p class="empty-message">Изображения отсутствуют. <a href="/upload">Загрузите первое!</a></p>
     {% endif %}
+
+    {% if total_pages > 1 %}
+        <div class="pagination">
+            {% if page > 1 %}
+                <a href="/images/?page={{ page - 1 }}">&laquo; Предыдущая</a>
+            {% endif %}
+
+            {% for p in range(1, total_pages + 1) %}
+                {% if p == page %}
+                    <span class="current">{{ p }}</span>
+                {% else %}
+                    <a href="/images/?page={{ p }}">{{ p }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page < total_pages %}
+                <a href="/images/?page={{ page + 1 }}">Следующая &raquo;</a>
+            {% endif %}
+        </div>
+    {% endif %}
+
 </div>
 
 <!-- Модальное окно для просмотра изображения -->

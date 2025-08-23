@@ -46,12 +46,23 @@ async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 @app.get("/images/", response_class=HTMLResponse)
-async def images(request: Request):
+async def images(request: Request, page: int = 1, limit: int = 6):
     logger.info("Доступ к странице галереи")
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
-        cursor.execute("SELECT id, url, thumbnail_url, description, upload_date FROM photos")
+
+        # Считаем общее количество изображений
+        cursor.execute("SELECT COUNT(*) FROM photos")
+        total_images = cursor.fetchone()[0]
+
+        # Пагинация
+        offset = (page - 1) * limit
+        cursor.execute(
+            "SELECT id, url, thumbnail_url, description, upload_date FROM photos ORDER BY upload_date DESC LIMIT %s OFFSET %s",
+            (limit, offset)
+        )
+
         images = [
             {
                 "id": row[0],
@@ -62,12 +73,25 @@ async def images(request: Request):
             }
             for row in cursor.fetchall()
         ]
+
         cursor.close()
         connection.close()
+
+        total_pages = (total_images + limit - 1) // limit
+
     except Exception as error:
         logger.error(f"Ошибка при получении изображений из БД: {error}")
         images = []
-    return templates.TemplateResponse("images.html", {"request": request, "images": images})
+        total_pages = 1
+        page = 1
+
+    return templates.TemplateResponse("images.html", {
+        "request": request,
+        "images": images,
+        "page": page,
+        "total_pages": total_pages
+    })
+
 
 @app.get("/upload/", response_class=HTMLResponse)
 async def upload_page(request: Request):
