@@ -32,3 +32,36 @@ document.getElementById('imageModal').addEventListener('click', function(event) 
         closeModal();
     }
 });
+
+// Функция для удаления изображения
+function deleteImage(imageId) {
+    if (!confirm('Вы уверены, что хотите удалить это изображение?')) {
+        return;
+    }
+
+    fetch(`/delete/${imageId}`, {
+        method: 'DELETE',
+    })
+    .then(response => {
+        if (response.ok) {
+            // После успешного удаления — обновляем страницу
+            window.location.reload();
+        } else {
+            return response.json().then(error => {
+                throw new Error(error.detail || 'Ошибка при удалении изображения');
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+        alert('Не удалось удалить изображение: ' + error.message);
+    });
+}
+
+// Делегирование события — будет работать даже если кнопки подгрузятся позже
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('delete-btn')) {
+        const imageId = event.target.getAttribute('data-id');
+        deleteImage(imageId);
+    }
+});

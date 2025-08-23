@@ -47,3 +47,39 @@ def create_table():
             cursor.close()
         if connection:
             connection.close()
+
+
+def delete_image(image_id):
+    connection = None
+    cursor = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        # Получаем URL изображения и миниатюры
+        cursor.execute("SELECT url, thumbnail_url FROM photos WHERE id = %s", (image_id,))
+        result = cursor.fetchone()
+        if not result:
+            raise ValueError(f"Изображение с ID {image_id} не найдено")
+
+        image_url, thumbnail_url = result
+        # Удаляем запись из базы данных
+        cursor.execute("DELETE FROM photos WHERE id = %s", (image_id,))
+        connection.commit()
+
+        # Удаляем файлы из файловой системы
+        image_path = os.path.join("/app", image_url.lstrip("/"))
+        thumbnail_path = os.path.join("/app", thumbnail_url.lstrip("/"))
+        if os.path.exists(image_path):
+            os.remove(image_path)
+        if os.path.exists(thumbnail_path):
+            os.remove(thumbnail_path)
+
+        print(f"Изображение с ID {image_id} успешно удалено")
+    except (Exception, Error) as error:
+        print(f"Ошибка при удалении изображения: {error}")
+        raise
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()

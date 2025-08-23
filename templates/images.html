@@ -29,6 +29,8 @@
                     <input type="text" value="{{ image.url }}" id="link-{{ image.id }}" readonly>
                     <button onclick="copyLink('link-{{ image.id }}')" class="btn-copy">Копировать</button>
                     <a href="{{ image.url }}" download class="btn-download">Скачать</a>
+                    <!-- Кнопка удаления изображения -->
+                    <button class="delete-btn" data-id="{{ image.id }}">Удалить</button>
                 </div>
             </div>
         </div>

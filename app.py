@@ -1,8 +1,8 @@
 import uvicorn
 import logging
 from logging.handlers import RotatingFileHandler
-from fastapi import FastAPI, Request, File, UploadFile, Form
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Request, File, UploadFile, Form, HTTPException
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from datetime import datetime
@@ -10,7 +10,7 @@ import os
 from PIL import Image
 import uuid
 from dotenv import load_dotenv
-from utils.utils import get_db_connection, create_table
+from utils.utils import get_db_connection, create_table, delete_image
 
 # Загружаем переменные окружения
 load_dotenv()
@@ -136,6 +136,19 @@ async def upload_image(request: Request, image: UploadFile = File(...), descript
         message = "Ошибка при сохранении изображения в базу данных"
 
     return templates.TemplateResponse("upload.html", {"request": request, "message": message})
+
+
+@app.delete("/delete/{image_id}", response_class=RedirectResponse)
+async def delete_image_endpoint(image_id: int):
+    try:
+        delete_image(image_id)
+        logger.info(f"Изображение с ID {image_id} успешно удалено")
+        return RedirectResponse(url="/images/", status_code=303)
+    except Exception as error:
+        logger.error(f"Ошибка при удалении изображения с ID {image_id}: {error}")
+        raise HTTPException(status_code=404, detail="Изображение не найдено или ошибка при удалении")
+
+
 
 if __name__ == "__main__":
     logger.info("Сервер запущен на http://127.0.0.1:8000")

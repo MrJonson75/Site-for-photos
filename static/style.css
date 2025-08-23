@@ -292,6 +292,20 @@ footer {
     background-color: #FFC107;
 }
 
+.image-card .delete-btn {
+    background-color: #FFDAB9;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+}
+
+.image-card .delete-btn:hover {
+    background-color: #FFC107;
+}
+
 .image-card .btn-download {
     background-color: #FFB6C1;
     color: white;
